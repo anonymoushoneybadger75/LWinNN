@@ -14,11 +14,11 @@ Clone the repository using:
 `git clone https://github.com/anonymoushoneybadger75/LWinNN.git`
 
 ### Downloading the datasets
-The datasets we use in our paper are the [MVTec-AD dataset](https://www.mvtec.com/company/research/datasets/mvtec-ad) and the [VisA dataset](https://github.com/amazon-science/spot-diff). Follow the instructions on the linked pages to download and extract the datasets and place them in a new folder in current root called `Data`. The VisA page links to a GitHub page that also provides scripts to restructure the folders, but we just use the default format upon downloading.
- The default folder names for these datasets are 'mvtec-anomaly-detection' and 'VisA_20220922'. If these foldernames differ, change this in the src/Dataloaders/AD_Dataset.py file. These datasets have different folder structures, our code is designed to deal with the **default** folder structures for both datasets. 
+The datasets we use in our paper are the [MVTec-AD dataset](https://www.mvtec.com/company/research/datasets/mvtec-ad) and the [VisA dataset](https://github.com/amazon-science/spot-diff). Follow the instructions on the linked pages to download and extract the datasets and place them in a new folder in current root called `Data`. The VisA page links to a GitHub page that also provides scripts to restructure the folders, but we just use the default format upon downloading. Our code will likely not work properly with other folder structures than the default.
+The default folder names for these datasets are 'mvtec-anomaly-detection' and 'VisA_20220922'. If these foldernames differ, change this in the src/Dataloaders/AD_Dataset.py file.
 
 ### Creating an environment
-We provide a requirements.txt file to create a conda environment. As many problems can still occur, our advise for creating an environment manually is to create an environment with python==3.10.15, [install the most recent (stable) version of pytorch with the right GPU setup](https://pytorch.org/get-started/locally/), and install the full version of [anomalib](https://github.com/openvinotoolkit/anomalib). For our hardware setup this looked like:
+We provide a requirements.txt file to create a conda environment. As many problems can still occur, our advise for creating an environment manually is to create an environment with python==3.10.15, [install the most recent (stable) version of pytorch with the right GPU setup](https://pytorch.org/get-started/locally/), and install the full version of [anomalib](https://github.com/openvinotoolkit/anomalib). For our hardware setup these commands were sufficient:
 ```shell
 conda create -n lwinnn python=3.10.15
 # find the torch version compatible with your OS on https://pytorch.org/get-started/locally/
