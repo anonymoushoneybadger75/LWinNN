@@ -6,8 +6,8 @@ import argparse
 import os
 from src.Dataloaders import MVTecAD, VisA
 from src.LWinNN.LWinNN_Backend import lwinnn
+from anomalib.metrics import AUPRO, AUROC
 import torchvision.transforms.v2 as transforms
-from torcheval.metrics import BinaryAUROC
 
 DATASETS = ['mvtec_ad', 'visa']
 CATEGORIES = ['bottle','cable','capsule','carpet','grid','hazelnut','leather','metal_nut','pill','screw','tile','toothbrush','transistor','wood','zipper',
@@ -51,8 +51,8 @@ def main(args):
         train_set = dataset(args.dataset_path, category=args.category, train=True, normalize=args.image_normalization, preserve_aspect_ratio=args.preserve_aspect_ratio)
         test_set = dataset(args.dataset_path, category=args.category, train=False, normalize=args.image_normalization, preserve_aspect_ratio=args.preserve_aspect_ratio)
 
-        train_loader = torch.utils.data.DataLoader(train_set, batch_size=args.batch_size, shuffle=False,num_workers=args.num_workers,pin_memory=False, drop_last=False)
-        test_loader = torch.utils.data.DataLoader(test_set, batch_size=args.batch_size, shuffle=False,num_workers=args.num_workers,pin_memory=False, drop_last=False)
+        train_loader = torch.utils.data.DataLoader(train_set, batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers, pin_memory=False, drop_last=False)
+        test_loader = torch.utils.data.DataLoader(test_set, batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers, pin_memory=False, drop_last=False)
 
         with torch.no_grad():
             device = torch.device(args.gpu_type)
@@ -74,25 +74,21 @@ def main(args):
             test_end = time.time()
 
             masks = torch.stack(test_set.get_masks())
-            targets = torch.Tensor(test_set.targets).int()
+            targets = test_set.targets
             
-            image_metric = BinaryAUROC()
-            image_metric.update(image_anomaly_scores, targets)
-            image_AUROC = image_metric.compute().item()
+            image_AUROC = AUROC()(image_anomaly_scores, targets)
 
             reshaper = transforms.Resize(masks.shape[-2:])
-            pixel_metric = BinaryAUROC()
-            pixel_metric.update(reshaper(pixel_anomaly_scores).flatten(), masks.int().flatten())
-            pixel_AUROC = pixel_metric.compute().item()
+            pixel_AUPRO = AUPRO()(reshaper(pixel_anomaly_scores), masks.int())
 
-            print(f'Anomaly detection score: {image_AUROC}. Anomaly segmentation score: {pixel_AUROC}')
+            print(f'Anomaly detection score: {image_AUROC}. Anomaly segmentation score: {pixel_AUPRO}')
             print(f'Train time: {train_end-train_start},Test time: {test_end-test_start}')
 
             model_parameters = vars(args)
 
             if args.write_scores != '':
                 model_parameters['image_AUROC'] = image_AUROC.item()
-                model_parameters['pixel_AUROC'] = pixel_AUROC.item()
+                model_parameters['pixel_AUPRO'] = pixel_AUPRO.item()
                 model_parameters['train_time'] = train_end-train_start
                 model_parameters['test_time'] = test_end-test_start
                 if args.limit_train_samples == -1:
@@ -116,9 +112,9 @@ def main(args):
     except RuntimeError as e:
         print('failed run. Error: ', e)
         model_parameters = vars(args)
-        if args.write_scores != "":
+        if args.write_scores != '':
             model_parameters['image_AUROC'] = -1
-            model_parameters['pixel_AUROC'] = -1
+            model_parameters['pixel_AUPRO'] = -1
             model_parameters['train_time'] = -1
             model_parameters['test_time'] = -1
             model_parameters['train_time_persample'] = -1
