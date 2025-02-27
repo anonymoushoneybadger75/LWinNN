@@ -4,7 +4,7 @@ This repository contains the implementation of local window nearest neighbors (L
 
 ## Quick start guide
 Using LWinNN requires 4 steps:
-1. clone the repository
+1. Clone the repository
 2. Downloading the datasets
 3. Create a python or conda environment
 4. Run the main.py file in terminal
@@ -14,8 +14,8 @@ Clone the repository using:
 `git clone https://github.com/anonymoushoneybadger75/LWinNN.git`
 
 ### Downloading the datasets
-The datasets we use in our paper are the [MVTec-AD dataset](https://www.mvtec.com/company/research/datasets/mvtec-ad) and the [VisA dataset](https://github.com/amazon-science/spot-diff). Follow the instructions on the linked pages to download and extract the datasets and place them in the `Data` folder. The VisA page links to a GitHub page that also provides scripts to restructure the folders, but we just use the default format upon downloading.
- The default folder names for these datasets are 'mvtec-anomaly-detection' and 'VisA_20220922'. If these foldernames differ, change this in the src/Dataloaders/AD_Dataset.py file. These datasets have different folder structures, our code is designed to deal with the **default** folder structures for both datasets.  
+The datasets we use in our paper are the [MVTec-AD dataset](https://www.mvtec.com/company/research/datasets/mvtec-ad) and the [VisA dataset](https://github.com/amazon-science/spot-diff). Follow the instructions on the linked pages to download and extract the datasets and place them in a new folder in current root called `Data`. The VisA page links to a GitHub page that also provides scripts to restructure the folders, but we just use the default format upon downloading.
+ The default folder names for these datasets are 'mvtec-anomaly-detection' and 'VisA_20220922'. If these foldernames differ, change this in the src/Dataloaders/AD_Dataset.py file. These datasets have different folder structures, our code is designed to deal with the **default** folder structures for both datasets. 
 
 ### Creating an environment
 We provide a requirements.txt file to create a conda environment. As many problems can still occur, our advise for creating an environment manually is to create an environment with python==3.10.15, [install the most recent (stable) version of pytorch with the right GPU setup](https://pytorch.org/get-started/locally/), and install the full version of [anomalib](https://github.com/openvinotoolkit/anomalib). For our hardware setup this looked like:
@@ -25,12 +25,12 @@ conda create -n lwinnn python=3.10.15
 pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126
 pip install anomalib[full]
 ```
-Anomalib is mostly needed for the IAD-specific AUPRO metric. We provide an Anomalib-free branch that uses AUROC for segmentation scores instead of AUPRO. 
+Anomalib is only needed for the IAD-specific AUPRO metric. We provide an Anomalib-free branch that uses AUROC for segmentation scores instead of AUPRO. Some packages may have to be installed manually (like Pandas) when not installing Anomalib.
 
 ### Run main.py
 Running main.py:
 `python main.py`
-Runs LWinNN with default settings, for the bottle category of the MVTec-AD dataset. Main.py will print anomaly detection score in AUROC, anomaly segmentation in AUPRO, and train and test time to console. 
+Runs LWinNN with default settings, for the bottle category of the MVTec-AD dataset. Main.py will print anomaly detection score in AUROC, anomaly segmentation in AUPRO, and train and test time in seconds to console. 
 
 ## Using LWinNN with other settings
 The main functionality of LWinNN is as follows:
@@ -45,13 +45,14 @@ The main functionality of LWinNN is as follows:
 ### Other settings
 The main.py file has a number of options. Changing to a different category or dataset is done as follows:
 `python main.py --dataset visa --category capsules --dataset_path 'alternative_path'`
-The VisA and MVTec dataset have different default folder structures and specifying both the dataset and a path is needed. 
+The VisA and MVTec dataset have different default folder structures and specifying both the dataset and a path is needed. --dataset_path refers to the location of the dataset folder, not the dataset folder itself.
 
 When hardware resources are limited, the amount of training samples or batch size can be configured with 
 `python main.py --limit_train_samples 100 --batch_size 16`
 
 Other hardware settings can be configured with
 `python main.py --num_workers 4 --gpu_type cuda --gpu_number 2`
+Our code provides (unstable) support for mps devices. Clearing cache on mps seems to set tensors to zero in some cases, greatly disturbing results. Enabling MPS therefore disables manual cache emptying. 
 
 Window size is our only hyperparameter and can be configured with
 `python main.py --window_size 7`
