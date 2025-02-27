@@ -4,7 +4,7 @@ This repository contains the implementation of local window nearest neighbors (L
 
 ## Quick start guide
 Using LWinNN requires 4 steps:
-1. clone the repository
+1. Clone the repository
 2. Downloading the datasets
 3. Create a python or conda environment
 4. Run the main.py file in terminal
