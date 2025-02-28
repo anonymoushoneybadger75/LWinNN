@@ -1,6 +1,6 @@
 # LWinNN
 
-This repository contains the implementation of local window nearest neighbors (LWinNN). LWinNN is a method for industrial anomaly detection that uses nearest neighbors in local windows. LWinNN focusses on creating invariance to minor translations, a problem much simpler than other methods tackle. This makes for a much lighter algorithm with minimal train and test time, but achieves higher accuracy than competitors. In our paper we explain our reasoning why other transformation variance cannot be created easily, and also why it does not have to be created. 
+This repository contains the implementation of local window nearest neighbors (LWinNN). LWinNN is a method for industrial anomaly detection that uses nearest neighbors in local windows (currently submitted for review). LWinNN focusses on creating invariance to minor translations, a problem much simpler than other methods tackle. This makes for a much lighter algorithm with minimal train and test time, but achieves higher accuracy than competitors. In our paper we explain our reasoning why other transformation variance cannot be created easily, and also why it does not have to be created. 
 
 ## Quick start guide
 Using LWinNN requires 4 steps:
