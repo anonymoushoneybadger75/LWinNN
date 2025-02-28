@@ -39,7 +39,7 @@ The main functionality of LWinNN is as follows:
 3. LWinNN_Backend.py then reshapes the embeddings and gives them to LWinNN_Model.py.
 4. a. If training, LWinNN_Model.py writes all train embeddings to memory.
 4. b. If testing, LWinNN_Model.py uses local window nearest neighbors between test and train embeddings to calculate patch anomaly scores.
-5. Finally, LWinNN_Model.py calculates anomaly detection and gives results back to LWinNN_Backend.py. 
+5. Finally, LWinNN_Model.py calculates an image anomaly score and gives results back to LWinNN_Backend.py. 
 
 
 ### Other settings
